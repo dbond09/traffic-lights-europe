@@ -5,3 +5,9 @@ red green yellow red
 UK
 red red-yellow green yellow red
 red green blank red
+
+Serbia
+red red-yellow green green-blink yellow red
+
+Greece
+red green yellow red
