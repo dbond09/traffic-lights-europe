@@ -3,13 +3,22 @@ console.log('he');
 var cycles = {
   gb: ['.red', '.red,.yellow', '.green', '.green', '.yellow'],
   hu: ['.red', '.red,.yellow', '.green', '.green', '.yellow'],
+  lv: ['.red', '.red,.yellow', '.green', '.green', '.yellow'],
+  cz: ['.red', '.red,.yellow', '.green', '.green', '.yellow'],
+  sk: ['.red', '.red,.yellow', '.green', '.green', '.yellow'],
+  pl: ['.red', '.red,.yellow', '.green', '.green', '.yellow'],
   de: ['.red', '.red,.yellow', '.green', '.green', '.yellow'],
   ch: ['.red', '.red,.yellow', '.green', '.green', '.yellow'],
   fi: ['.red', '.red,.yellow', '.green', '.green', '.yellow'],
   tr: ['.red', '.red,.yellow', '.green', '.green', '.yellow'],
   rs: ['.red', '.red,.yellow', '.green', '.green,.blink', '.yellow'],
+  at: ['.red', '.red,.yellow', '.green', '.green,.blink', '.yellow'],
   ua: ['.red', '.red,.yellow', '.green', '.green,.blink', '.yellow'],
+  ee: ['.red', '.red,.yellow', '.green', '.green,.blink', '.yellow'],
+  lt: ['.red', '.red,.yellow', '.green', '.green,.blink', '.yellow'],
+  by: ['.red', '.red,.yellow', '.green', '.green,.blink', '.yellow'],
   gr: ['.red', '.red', '.green', '.green', '.yellow'],
+  ro: ['.red', '.red', '.green', '.green', '.yellow'],
   ie: ['.red', '.red', '.green', '.green', '.yellow'],
   fr: ['.red', '.red', '.green', '.green', '.yellow'],
   it: ['.red', '.red', '.green', '.green', '.yellow'],
@@ -85,6 +94,11 @@ function main() {
         if (cycles[countries[i]][state].includes("blink")) {
           d3.select(map).select("#"+countries[i]+"_light").selectAll(cycles[countries[i]][state]).classed("blink", true);
         }
+        // if (cycles[countries[i]][state].includes("yellow")) {
+        //   d3.select(map).select("#"+countries[i])
+        //   .style("fill", "lightyellow")
+        //   .selectAll("*").style("fill", "lightyellow");
+        // }
       }
     }
     window.setTimeout(animate, [5000, 2000, 3000, 4000, 2000][state]);
