@@ -1,5 +1,3 @@
-console.log('he');
-
 var cycles = {
   gb: ['.red', '.red,.yellow', '.green', '.green', '.yellow'],
   hu: ['.red', '.red,.yellow', '.green', '.green', '.yellow'],
@@ -35,6 +33,7 @@ var cycles = {
   ie: ['.red', '.red', '.green', '.green', '.yellow'],
   fr: ['.red', '.red', '.green', '.green', '.yellow'],
   it: ['.red', '.red', '.green', '.green', '.yellow'],
+  lu: ['.red', '.red', '.green', '.green', '.yellow'],
   al: ['.red', '.red', '.green', '.green', '.yellow'],
   pt: ['.red', '.red', '.green', '.green', '.yellow'],
   nl: ['.red', '.red', '.green', '.green', '.yellow'],
@@ -43,63 +42,43 @@ var cycles = {
   ru: ['.red', '.yellow', '.green', '.green,.blink', '.yellow']
 };
 
+var finetune = {
+  no: {x: -30, y: 40, scale: 0.6},
+  mt: {x: 0, y: 0, scale: 10},
+  cy: {x: 0, y: 0, scale: 3},
+  hr: {x: -5, y: 0, scale: 1},
+  gb: {x: 10, y: 20, scale: 1}
+};
+
+var fillstyles = {
+  '.red': 'lightcoral',
+  '.yellow': 'khaki',
+  '.green': 'lightgreen',
+  '.red,.yellow': 'lightsalmon',
+  '.green,.blink': 'url(#diagonalHatch)'
+}
+
 var map;
 var countries = [];
 var state = 0;
 
 var light = document.querySelector("#light").innerHTML;
 
-// window.fetch("./light.svg")
-//   .then(function(res) {
-//     return res.text();
-//   })
-//   .then(function(res) {
-//     light = res;
-//   });
-
 function main() {
   map = document.querySelector("#map").contentDocument;
 
-  // countries = map.querySelectorAll("path");
-  // for (var i = 0; i < countries.length; i++) {
-  //   countries[i].onclick = fillBlue;
-  // }
-
-  d3.select(map).selectAll("*")
-    .filter(function() {return this.id.length == 2})
+  d3.select(map).selectAll("#layer1 > *")
+    .attr("visibility", function() {return cycles.hasOwnProperty(this.id) ? "visible" : "hidden"})
+    .filter(function() {return cycles.hasOwnProperty(this.id)})
     // .each(function() {console.log(this.id)})
     .classed("country", true);
 
   d3.select(map).selectAll(".country")
     .each(function() {
-      fillBlue(this);
+      addLight(this);
       countries.push(this.id);
-      // d3.select(map).select("#"+this.id+"_light").select(".red").style("fill", "gray");
     });
 
-  // d3.select(map).selectAll(".red,.green,.yellow").style("fill", "gray");
-
-  // window.setInterval(function() {
-  //   if (state == 0) {
-  //     d3.select(map).selectAll(".red,.green,.yellow").style("fill", "gray");
-  //     d3.select(map).selectAll(".red").style("fill", "red");
-  //     state = 1;
-  //   }
-  //   else if (state == 1) {
-  //     d3.select(map).selectAll(".yellow").style("fill", "yellow");
-  //     state = 2;
-  //   }
-  //   else if (state == 2) {
-  //     d3.select(map).selectAll(".red,.green,.yellow").style("fill", "gray");
-  //     d3.select(map).selectAll(".green").style("fill", "green");
-  //     state = 3;
-  //   }
-  //   else if (state == 3) {
-  //     d3.select(map).selectAll(".red,.green,.yellow").style("fill", "gray");
-  //     d3.select(map).selectAll(".yellow").style("fill", "yellow");
-  //     state = 0;
-  //   }
-  // }, 3000);
 
 
   function animate() {
@@ -111,27 +90,25 @@ function main() {
         if (cycles[countries[i]][state].includes("blink")) {
           d3.select(map).select("#"+countries[i]+"_light").selectAll(cycles[countries[i]][state]).classed("blink", true);
         }
-        // if (cycles[countries[i]][state].includes("yellow")) {
-        //   d3.select(map).select("#"+countries[i])
-        //   .style("fill", "lightyellow")
-        //   .selectAll("*").style("fill", "lightyellow");
-        // }
+        d3.select(map).select("#"+countries[i])
+          .style("fill", fillstyles[cycles[countries[i]][state]])
+          .selectAll("*").style("fill", fillstyles[cycles[countries[i]][state]]);
       }
     }
-    window.setTimeout(animate, [5000, 2000, 3000, 4000, 2000][state]);
+    window.setTimeout(animate, [5000, 3000, 3000, 3000, 2000][state]);
     state = (state + 1) % 5;
   }
   animate();
 
-  function fillBlue(tgt) {
+  function addLight(tgt) {
     // document.body.innerHTML += light;
     // console.log("he");
     if (!cycles.hasOwnProperty(tgt.id)) { return; }
     var c = tgt.getBoundingClientRect();
-    var x = c.x + (c.width / 2);
-    var y = c.y + (c.height / 2);
-    var scale = c.height / 750 / 2;
-    // var scale = 1;
+    var x = c.x + (c.width / 2) + (finetune.hasOwnProperty(tgt.id) ? finetune[tgt.id].x : 0);
+    var y = c.y + (c.height / 2) + (finetune.hasOwnProperty(tgt.id) ? finetune[tgt.id].y : 0);
+    var scale = (c.height / 750 / 2) * (finetune.hasOwnProperty(tgt.id) ? finetune[tgt.id].scale : 1);
+    // var scale = 0;
     var e = d3.select(tgt.parentElement);
     e.append("g").html(light)
     .attr("transform", "translate(" + (x - (138 * scale)) + ", " + (y - (375 * scale)) + ") scale(" + scale + ")")
