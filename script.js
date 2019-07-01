@@ -61,6 +61,9 @@ var fillstyles = {
 var map;
 var countries = [];
 var state = 0;
+var sc = 0; // last state-change
+var STATETIMES = [5000, 3000, 3000, 3000, 2000];
+var started = false;
 
 var light = document.querySelector("#light").innerHTML;
 
@@ -80,25 +83,47 @@ function main() {
     });
 
 
-
-  function animate() {
-    d3.select(map).selectAll(".red,.green,.yellow").classed("off", true);
-    d3.select(map).selectAll(".red,.green,.yellow").classed("blink", false);
-    for (var i = 0; i < countries.length; i++) {
-      if (cycles.hasOwnProperty(countries[i])) {
-        d3.select(map).select("#"+countries[i]+"_light").selectAll(cycles[countries[i]][state]).classed("off", false);
-        if (cycles[countries[i]][state].includes("blink")) {
-          d3.select(map).select("#"+countries[i]+"_light").selectAll(cycles[countries[i]][state]).classed("blink", true);
+  function animate(timestamp) {
+    if (timestamp - sc > stateTime((state+4) % 5) || !started) {
+      started = true;
+      d3.select(map).selectAll(".red,.green,.yellow").classed("off", true);
+      d3.select(map).selectAll(".red,.green,.yellow").classed("blink", false);
+      for (var i = 0; i < countries.length; i++) {
+        if (cycles.hasOwnProperty(countries[i])) {
+          d3.select(map).select("#"+countries[i]+"_light").selectAll(cycles[countries[i]][state]).classed("off", false);
+          if (cycles[countries[i]][state].includes("blink")) {
+            d3.select(map).select("#"+countries[i]+"_light").selectAll(cycles[countries[i]][state]).classed("blink", true);
+          }
+          d3.select(map).select("#"+countries[i])
+            .style("fill", fillstyles[cycles[countries[i]][state]])
+            .selectAll("*").style("fill", fillstyles[cycles[countries[i]][state]]);
         }
-        d3.select(map).select("#"+countries[i])
-          .style("fill", fillstyles[cycles[countries[i]][state]])
-          .selectAll("*").style("fill", fillstyles[cycles[countries[i]][state]]);
       }
+      // window.setTimeout(animate, [5000, 3000, 3000, 3000, 2000][state]);
+      if (state == 0) { sc = timestamp; }
+      state = (state + 1) % 5;
+
+      // var degree = (((timestamp - sc) % stateTime(4)) / stateTime(4)) * 360;
+
+      // console.log(degree);
     }
-    window.setTimeout(animate, [5000, 3000, 3000, 3000, 2000][state]);
-    state = (state + 1) % 5;
+    // var degree = (((timestamp - sc) % stateTime(5)) / stateTime(5)) * 360 + 90;
+    // var degree = (state-1) * 72 + (timestamp - sc + stateTime((state + 3) % 5)) / stateTime(5) * 360 + 90;
+    var degree = (state) * 72 + ((timestamp - sc - stateTime((state + 4) % 5)) / STATETIMES[(state + 4) % 5]) * 72 + 90;
+    // var degree = 90;
+    // console.log(degree);
+    var crc = document.querySelector("#circle").contentDocument;
+    d3.select(crc).select("line")
+    .attr("x2", -Math.cos(degree / 180 * Math.PI) * 163 + 163)
+    .attr("y2", -Math.sin(degree / 180 * Math.PI) * 164 + 164);
+    // console.log(degree);
+    window.requestAnimationFrame(animate)
   }
-  animate();
+  animate(0);
+
+  function stateTime(state) {
+    return STATETIMES.slice(0, state+1).reduce((a, b) => a+b, 0);
+  }
 
   function addLight(tgt) {
     // document.body.innerHTML += light;
