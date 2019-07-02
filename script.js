@@ -47,7 +47,11 @@ var finetune = {
   mt: {x: 0, y: 0, scale: 10},
   cy: {x: 0, y: 0, scale: 3},
   hr: {x: -5, y: 0, scale: 1},
-  gb: {x: 10, y: 20, scale: 1}
+  gb: {x: 10, y: 20, scale: 1},
+  lu: {x: 0, y: 0, scale: 3},
+  at: {x: 10, y: 0, scale: 1},
+  is: {x: 0, y: 5, scale: 1},
+  dk: {x: -10, y: 0, scale: 1.3}
 };
 
 var fillstyles = {
@@ -140,4 +144,11 @@ function main() {
     .attr("id", tgt.id + "_light")
     // console.log(e)
   }
+
+  createLegend();
+}
+
+function createLegend() {
+  var legend = d3.select("#legend");
+  legend.append("svg").append("g").html(light).attr("transform", "scale(0.05)");
 }
