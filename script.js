@@ -113,13 +113,13 @@ function main() {
     }
     // var degree = (((timestamp - sc) % stateTime(5)) / stateTime(5)) * 360 + 90;
     // var degree = (state-1) * 72 + (timestamp - sc + stateTime((state + 3) % 5)) / stateTime(5) * 360 + 90;
-    var degree = (state) * 72 + ((timestamp - sc - stateTime((state + 4) % 5)) / STATETIMES[(state + 4) % 5]) * 72 + 90;
+    // var degree = (state) * 72 + ((timestamp - sc - stateTime((state + 4) % 5)) / STATETIMES[(state + 4) % 5]) * 72 + 90;
     // var degree = 90;
     // console.log(degree);
-    var crc = document.querySelector("#circle").contentDocument;
-    d3.select(crc).select("line")
-    .attr("x2", -Math.cos(degree / 180 * Math.PI) * 163 + 163)
-    .attr("y2", -Math.sin(degree / 180 * Math.PI) * 164 + 164);
+    // var crc = document.querySelector("#circle").contentDocument;
+    // d3.select(crc).select("line")
+    // .attr("x2", -Math.cos(degree / 180 * Math.PI) * 163 + 163)
+    // .attr("y2", -Math.sin(degree / 180 * Math.PI) * 164 + 164);
     // console.log(degree);
     window.requestAnimationFrame(animate)
   }
@@ -145,7 +145,7 @@ function main() {
     // console.log(e)
   }
 
-  createLegend();
+  // createLegend();
 }
 
 function createLegend() {
